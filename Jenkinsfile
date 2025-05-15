@@ -1,22 +1,30 @@
 pipeline {
     agent any
 
+    environment {
+        FILE = 'laptop.txt'
+        BUILD = 'build'
+    }
+
     stages {
         stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
+            
             steps {
                 sh '''
-                    ls -la
-                    node --version
-                    npm --version
-                    npm ci
-                    npm run build
-                    ls -la
+                    mkdir -p $BUILD
+                    touch $BUILD/$FILE
+                    echo "Mainboard" >> $BUILD/$FILE
+                    
+                '''
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing the new laptop ...'
+                sh '''
+                    test -f $BUILD/$FILE
+                    grep "Mainboard" $BUILD/$FILE
+                    
                 '''
             }
         }
