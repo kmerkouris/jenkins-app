@@ -10,7 +10,7 @@ pipeline {
         stage('Build') {
             steps {
                 cleanWs()
-                echo 'Building a new laptop ...'
+                echo 'Building step ...'
                 sh '''
                     echo $BUILD_FILE_NAME
                     mkdir -p $BUILD_FOLDER_NAME
@@ -25,7 +25,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Testing the new laptop ...'
+                echo 'Testing step ...'
                 sh '''
                     test -f $BUILD_FOLDER_NAME/$BUILD_FILE_NAME
                     grep "Mainboard" $BUILD_FOLDER_NAME/$BUILD_FILE_NAME
