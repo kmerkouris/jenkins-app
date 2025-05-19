@@ -2,24 +2,24 @@ pipeline {
     agent any
 
     stages {
-        // stage('Build') {
-        //     agent {
-        //         docker {
-        //             image 'node:18-alpine'
-        //             args '-u root'
-        //             reuseNode true
-        //         }
-        //     }
-        //     steps {
-        //         sh '''
-        //             node --version
-        //             npm --version
-        //             npm ci
-        //             npm install react-scripts
-        //             npm run build
-        //         '''
-        //     }
-        // }
+        /*stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    node --version
+                    npm --version
+                    npm ci
+                    npm install react-scripts
+                    npm run build
+                '''
+            }
+        }*/
 
         stage('Test') {
             agent {
