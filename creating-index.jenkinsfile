@@ -34,6 +34,7 @@ pipeline {
             steps {
                 sh '''
                     cd my-app
+                    npm install
                     npm run build
                 '''
             }
