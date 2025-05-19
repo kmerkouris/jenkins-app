@@ -15,7 +15,7 @@ pipeline {
                     node --version
                     npm --version
                     npm ci
-                    npm install react-scripts
+                    npm install react-scripts --save
                     npm run build
                 '''
             }
@@ -33,8 +33,7 @@ pipeline {
             steps {
             
                 sh '''
-                    npm install react-scripts --save
-
+                  
                     npm test
                 '''
             }
@@ -52,7 +51,7 @@ pipeline {
                 sh '''
                     npx playwright install --with-deps
                     npm install serve
-                    node_modules/.bin/serve -s build 
+                    node_modules/.bin/serve -s build &  
                     npx playwright test
 
                  '''
