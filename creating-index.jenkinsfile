@@ -51,16 +51,10 @@ pipeline {
             steps {
                 sh '''
                     npx playwright install --with-deps
-                    npm install -g serve
-                    serve -s build &
-
-                    
-                    sleep 5
-                    
+                    npm install serve
+                    node_modules/.bin/serve -s build 
                     npx playwright test
 
-                   
-                    kill %1
                  '''
             }
         }
