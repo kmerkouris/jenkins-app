@@ -20,7 +20,7 @@ pipeline {
                 sh '''
                     rm -rf my-app/node_modules my-app/package-lock.json
                     cd my-app
-                    npm ci
+                    npm install
                 '''
             }
         }
@@ -36,7 +36,7 @@ pipeline {
                 sh '''
                     rm -rf my-app/node_modules my-app/package-lock.json
                     cd my-app
-                    npm ci
+                    npm install
                     npm run build
                 '''
             }
