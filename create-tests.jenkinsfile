@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+
+    environment {
+        CI = 'true' 
+    }
+
+    stages {
+        stage('Install Dependencies') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    node --version
+                    npm --version
+                    npm install
+                '''
+            }
+        }
+
+        stage('Build React App') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm run build
+                '''
+            }
+        }
+
+        stage('Unit Tests') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    args '-u root'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm test -- --watchAll=false --ci
+                '''
+            }
+        }
+
+        stage('E2E Tests') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm ci || npm install  # fallback if npm ci fails
+                    npx playwright install --with-deps
+                    npm run build
+                    npx serve -s build &  
+                    sleep 3  # wait for server to boot
+                    npm run e2e
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            junit allowEmptyResults: true, testResults: '**/junit.xml'
+            archiveArtifacts artifacts: '**/playwright-report/**', allowEmptyArchive: true
+        }
+    }
+}
