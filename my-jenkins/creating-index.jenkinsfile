@@ -12,13 +12,12 @@ pipeline {
         stage('Install') {
             agent {
                 docker {
-                    image 'node:18'  // Use full Debian-based Node image
+                    image 'node:18'  
                     reuseNode true
                 }
             }
             steps {
                 sh '''
-                    cd my-jenkins
                     echo "Cleaning old node_modules..."
                     rm -rf node_modules
                     echo "Installing dependencies..."
