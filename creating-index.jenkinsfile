@@ -12,13 +12,11 @@ pipeline {
             }
             steps {
                 sh '''
-                    ls -la
                     node --version
                     npm --version
                     npm ci
                     npm install react-scripts
                     npm run build
-                    ls -la
                 '''
             }
         }
@@ -33,13 +31,10 @@ pipeline {
             }
 
             steps {
+            
                 sh '''
-                    grep "stage" creating-index.jenkinsfile
+                    npm test
                 '''
-                // sh '''
-                //     #test -f build/index.html
-                //     npm test
-                // '''
             }
         }
 
@@ -53,10 +48,17 @@ pipeline {
 
             steps {
                 sh '''
+                    npx playwright install --with-deps
                     npm install -g serve
-                    serve -s build 
+                    serve -s build &
 
+                    
+                    sleep 5
+                    
                     npx playwright test
+
+                   
+                    kill %1
                  '''
             }
         }
