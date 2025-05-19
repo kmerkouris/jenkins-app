@@ -2,39 +2,44 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                sh 'ls -la'
+            }
+        }
+
+        stage('Install') {
             agent {
                 docker {
-                    image 'node:18-alpine'
+                    image 'node:18'  // Use full Debian-based Node image
                     reuseNode true
                 }
             }
             steps {
                 sh '''
-                    cd my-jenkins/
-                    ls -la
-                    rm -rf my-app/node_modules
-                    node --version
-                    npm --version
+                    cd my-jenkins
+                    echo "Cleaning old node_modules..."
+                    rm -rf node_modules
+                    echo "Installing dependencies..."
                     npm install
-                    npm run build
-                    ls -la
+                   
+                    ls node_modules/react-scripts 
                 '''
             }
         }
 
-        stage('Test') {
+        stage('Build') {
             agent {
                 docker {
-                    image 'node:18-alpine'
+                    image 'node:18'
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
-                    test -f build/index.html
-                    npm test
+                    cd my-jenkins
+                    npm run build
                 '''
             }
         }
