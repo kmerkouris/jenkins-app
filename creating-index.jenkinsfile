@@ -5,10 +5,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'ls -la'   // <- Confirm package.json is there
+                sh 'ls -la && ls -la my-app'
             }
         }
-
 
         stage('Init') {
             agent {
@@ -19,8 +18,8 @@ pipeline {
             }
             steps {
                 sh '''
-                    ls -la
-                    npm install 
+                    cd my-app
+                    npm install
                 '''
             }
         }
@@ -34,6 +33,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    cd my-app
                     npm run build
                 '''
             }
@@ -48,6 +48,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    cd my-app
                     test -f build/index.html
                     npm test
                 '''
