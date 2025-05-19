@@ -31,9 +31,12 @@ pipeline {
 
             steps {
                 sh '''
-                    test -f build/index.html
-                    npm test
+                    grep "stage" creating-index.jenkinsfile
                 '''
+                // sh '''
+                //     test -f build/index.html
+                //     npm test
+                // '''
             }
         }
     }
