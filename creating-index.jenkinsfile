@@ -4,10 +4,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-             
                 checkout scm
+                sh 'ls -la'   // <- Confirm package.json is there
             }
         }
+
 
         stage('Init') {
             agent {
