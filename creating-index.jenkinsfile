@@ -2,29 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-                sh 'ls -la && ls -la my-app'
-            }
-        }
-
-        stage('Init') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    rm -rf my-app/node_modules my-app/package-lock.json
-                    cd my-app
-                    npm install
-                '''
-            }
-        }
-
         stage('Build') {
             agent {
                 docker {
@@ -34,10 +11,12 @@ pipeline {
             }
             steps {
                 sh '''
-                    rm -rf my-app/node_modules my-app/package-lock.json
-                    cd my-app
-                    npm install
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
                     npm run build
+                    ls -la
                 '''
             }
         }
@@ -49,9 +28,9 @@ pipeline {
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
-                    cd my-app
                     test -f build/index.html
                     npm test
                 '''
