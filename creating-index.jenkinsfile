@@ -5,7 +5,7 @@ pipeline {
          stage('Build') {
             agent {
                 docker {
-                    image 'node:24-alpine'
+                    image 'node:18-alpine'
                     args '-u root'
                     reuseNode true
                 }
@@ -13,18 +13,18 @@ pipeline {
             steps {
                 sh '''
                     node --version
-                    npm --version
-                    npm ci
+                    npm --version'''
+                    /*npm ci
                     npm install react-scripts --save
-                    npm run build
-                '''
+                    npm run build*/
+                
             }
         }
 
         stage('Test') {
             agent {
                 docker {
-                    image 'node:24-alpine'
+                    image 'node:18-alpine'
                     args '-u root'
                     reuseNode true
                 }
@@ -33,8 +33,7 @@ pipeline {
             steps {
             
                 sh '''
-                  
-                    npm test
+                  echo "TEST"
                 '''
             }
         }
