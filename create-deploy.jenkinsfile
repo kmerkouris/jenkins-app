@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NETLIFY_SITE_ID = 'a2dc4a84-fce7-45d1-99e8-5235324b55fc'
+        NETLIFY_SITE_ID = 'PUT YOUR NETLIFY SITE ID HERE'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
     }
 
@@ -17,22 +17,12 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "Node & npm versions:"
-                    node -v
-                    npm -v
-
-                    echo "Cleaning npm state..."
-                    rm -rf node_modules package-lock.json
-                    npm cache clean --force
-
-                    echo "Installing dependencies..."
-                    npm install --no-audit --no-fund
-
-                    echo "Building application..."
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
                     npm run build
-
-                    echo "Build complete:"
-                    ls -la build
+                    ls -la
                 '''
             }
         }
@@ -46,10 +36,11 @@ pipeline {
                             reuseNode true
                         }
                     }
+
                     steps {
                         sh '''
-                            echo "Running unit tests..."
-                            npm test || true  # prevent build failure if test coverage fails
+                            #test -f build/index.html
+                            npm test
                         '''
                     }
                     post {
@@ -66,30 +57,19 @@ pipeline {
                             reuseNode true
                         }
                     }
+
                     steps {
                         sh '''
-                            echo "Installing serve..."
                             npm install serve
-
-                            echo "Starting server..."
-                            nohup node_modules/.bin/serve -s build > serve.log 2>&1 &
+                            node_modules/.bin/serve -s build &
                             sleep 10
-
-                            echo "Running Playwright tests..."
-                            npx playwright test --reporter=html
+                            npx playwright test  --reporter=html
                         '''
                     }
+
                     post {
                         always {
-                            publishHTML([
-                                allowMissing: false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll: false,
-                                reportDir: 'playwright-report',
-                                reportFiles: 'index.html',
-                                reportName: 'Playwright HTML Report',
-                                useWrapperFileDirectly: true
-                            ])
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
                 }
@@ -105,15 +85,37 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "Installing Netlify CLI..."
-                    npm install netlify-cli@20.1.1
-
-                    echo "Checking Netlify CLI version:"
-                    npx netlify --version
-
-                    echo "Deploying to Netlify - Site ID: $NETLIFY_SITE_ID"
-                    npx netlify deploy --dir=build --prod
+                    npm install netlify-cli
+                    node_modules/.bin/netlify --version
+                    echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
+                    node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build --prod
                 '''
+            }
+        }
+
+        stage('Prod E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+
+            environment {
+                CI_ENVIRONMENT_URL = 'PUT YOUR NETLIFY SITE URL HERE'
+            }
+
+            steps {
+                sh '''
+                    npx playwright test  --reporter=html
+                '''
+            }
+
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E', reportTitles: '', useWrapperFileDirectly: true])
+                }
             }
         }
     }
