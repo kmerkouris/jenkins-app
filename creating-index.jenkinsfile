@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-         stage('Build') {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -12,12 +12,20 @@ pipeline {
             }
             steps {
                 sh '''
-                    node --version
-                    npm --version'''
-                    /*npm ci
+                    echo "Node version: $(node --version)"
+                    echo "NPM version: $(npm --version)"
+
+                    echo "Cleaning workspace..."
+                    rm -rf node_modules package-lock.json
+                    npm cache clean --force
+
+                    echo "Installing dependencies..."
+                    npm ci --no-audit --no-fund
                     npm install react-scripts --save
-                    npm run build*/
-                
+
+                    echo "Building the app..."
+                    npm run build
+                '''
             }
         }
 
@@ -29,11 +37,11 @@ pipeline {
                     reuseNode true
                 }
             }
-
             steps {
-            
                 sh '''
-                  echo "TEST"
+                    echo "Running tests..."
+                    # Place test commands here (e.g., npm test or jest)
+                    echo "TEST"
                 '''
             }
         }
@@ -45,22 +53,38 @@ pipeline {
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
+                    echo "Installing Playwright dependencies..."
                     npx playwright install --with-deps
-                    npm install serve
-                    node_modules/.bin/serve -s build &  
-                    npx playwright test --reporter=html 
 
-                 '''
+                    echo "Installing serve..."
+                    npm install serve
+
+                    echo "Serving app in background..."
+                    nohup node_modules/.bin/serve -s build &
+
+                    echo "Running Playwright tests..."
+                    npx playwright test --reporter=html
+                '''
             }
         }
     }
+
     post {
         always {
             junit 'jest-results/junit.xml'
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                icon: '',
+                keepAll: false,
+                reportDir: 'playwright-report',
+                reportFiles: 'index.html',
+                reportName: 'Playwright HTML Report',
+                reportTitles: '',
+                useWrapperFileDirectly: true
+            ])
         }
     }
 }
