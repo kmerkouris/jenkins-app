@@ -1,10 +1,18 @@
-.App {
-  text-align: center;
+/* Base styles using Tailwind utility layering (for clarity) */
+body {
+  @apply bg-blue-50 text-blue-900 font-sans antialiased leading-relaxed;
 }
 
+/* Main App wrapper (if using className="App") */
+.App {
+  @apply text-center;
+}
+
+/* Logo styles */
 .App-logo {
-  height: 40vmin;
+  height: 40px;
   pointer-events: none;
+  @apply mx-auto mb-4;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -13,21 +21,7 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
+/* Optional animated logo */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -35,4 +29,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Header styling */
+.App-header {
+  @apply bg-blue-100 min-h-screen flex flex-col items-center justify-center text-blue-900 text-xl;
+}
+
+/* Links */
+.App-link {
+  @apply text-blue-600 hover:underline;
 }
