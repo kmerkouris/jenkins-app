@@ -62,7 +62,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm ci || npm install 
+                    npm ci 
                     npx playwright install --with-deps
                     npm run build
                     npx serve -s build &  
