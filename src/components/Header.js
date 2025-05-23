@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactComponent as Logo } from './logo.png';
+import { ReactComponent as Logo } from '../logo.png';
 
 export default function Header() {
   return (
