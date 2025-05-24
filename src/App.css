@@ -1,18 +1,9 @@
-/* Base styles using Tailwind utility layering (for clarity) */
-body {
-  @apply bg-blue-50 text-blue-900 font-sans antialiased leading-relaxed;
-}
-
-/* Main App wrapper (if using className="App") */
-.App {
-  @apply text-center;
-}
-
-/* Logo styles */
+/* Optional: Logo animation for PNG/SVG logo */
 .App-logo {
   height: 40px;
   pointer-events: none;
-  @apply mx-auto mb-4;
+  display: block;
+  margin: 0 auto 1rem;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -21,7 +12,6 @@ body {
   }
 }
 
-/* Optional animated logo */
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -31,12 +21,17 @@ body {
   }
 }
 
-/* Header styling */
-.App-header {
-  @apply bg-blue-100 min-h-screen flex flex-col items-center justify-center text-blue-900 text-xl;
+/* Utility class if needed for centering app-level content */
+.App {
+  text-align: center;
 }
 
-/* Links */
+/* Optional link style for consistent MUI-themed links */
 .App-link {
-  @apply text-blue-600 hover:underline;
+  color: #e2a013;
+  text-decoration: none;
+}
+
+.App-link:hover {
+  text-decoration: underline;
 }

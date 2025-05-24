@@ -1,28 +1,45 @@
+import React from 'react';
+import { Box, Typography, List, ListItem } from '@mui/material';
+
 export default function Experience() {
   return (
-    <section className="mb-10">
-      <h2 className="text-2xl font-semibold mb-2">Experience</h2>
-      <div className="mb-4">
-        <h3 className="font-bold">Netcompany-Intrasoft, Athens, Greece | Hybrid</h3>
-        <p className="italic">Full Stack Software Engineer (Jul 2024 - Present)</p>
-        <ul className="list-disc list-inside ml-4">
-          <li>Web development with Node.js, React.js, and Docker</li>
-          <li>Maintained CI/CD pipelines with Jenkins and GitLab</li>
-          <li>Configured OPA policies and Spring Cloud Gateway</li>
-        </ul>
-        <p className="italic mt-2">Junior Full Stack Software Engineer (Intern) (Jan 2024 - Jul 2024)</p>
-        <ul className="list-disc list-inside ml-4">
-          <li>Supported development tasks and participated in code reviews</li>
-        </ul>
-      </div>
-      <div>
-        <h3 className="font-bold">Technon</h3>
-        <p className="italic">IT Network and Security Engineer (Oct 2023 - Dec 2023)</p>
-        <ul className="list-disc list-inside ml-4">
-          <li>Conducted IT audits and configured Cisco routers</li>
-          <li>Integrated network systems with VirtualBox and ITSM tools</li>
-        </ul>
-      </div>
-    </section>
+    <Box sx={{ mt: 4, mb: 6 }}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+        Experience
+      </Typography>
+
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+          Netcompany-Intrasoft, Athens, Greece | Hybrid
+        </Typography>
+        <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+          Full Stack Software Engineer (Jul 2024 – Present)
+        </Typography>
+        <List dense sx={{ pl: 2 }}>
+          <ListItem sx={{ display: 'list-item' }}>Web development with Node.js, React.js, and Docker</ListItem>
+          <ListItem sx={{ display: 'list-item' }}>Maintained CI/CD pipelines with Jenkins and GitLab</ListItem>
+          <ListItem sx={{ display: 'list-item' }}>Configured OPA policies and Spring Cloud Gateway</ListItem>
+        </List>
+        <Typography variant="body2" sx={{ fontStyle: 'italic', mt: 2 }}>
+          Junior Full Stack Software Engineer (Intern) (Jan 2024 – Jul 2024)
+        </Typography>
+        <List dense sx={{ pl: 2 }}>
+          <ListItem sx={{ display: 'list-item' }}>Supported development tasks and participated in code reviews</ListItem>
+        </List>
+      </Box>
+
+      <Box>
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+          Technon
+        </Typography>
+        <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+          IT Network and Security Engineer (Oct 2023 – Dec 2023)
+        </Typography>
+        <List dense sx={{ pl: 2 }}>
+          <ListItem sx={{ display: 'list-item' }}>Conducted IT audits and configured Cisco routers</ListItem>
+          <ListItem sx={{ display: 'list-item' }}>Integrated network systems with VirtualBox and ITSM tools</ListItem>
+        </List>
+      </Box>
+    </Box>
   );
 }

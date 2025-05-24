@@ -1,20 +1,22 @@
 import React from 'react';
+import { Container, Box, CssBaseline } from '@mui/material';
 import Header from './components/Header';
 import About from './components/About';
 import Experience from './components/Experience';
 import Education from './components/Education';
 import Skills from './components/Skills';
 
-function App() {
+export default function App() {
   return (
-    <div className="font-sans bg-blue-50 text-blue-900 min-h-screen p-6">
+    <>
+      <CssBaseline />
       <Header />
-      <About />
-      <Experience />
-      <Education />
-      <Skills />
-    </div>
+      <Container maxWidth="md">
+        <Box id="about"><About /></Box>
+        <Box id="experience"><Experience /></Box>
+        <Box id="education"><Education /></Box>
+        <Box id="skills"><Skills /></Box>
+      </Container>
+    </>
   );
 }
-
-export default App;
