@@ -14,7 +14,7 @@ export default function About() {
         </Typography>
 
         <Typography
-          variant="h5"
+          variant="h6"
           sx={{ color: '#1a237e', textAlign: 'justify' }}
         >
           Creative and driven full-stack software engineer with a passion for building robust,

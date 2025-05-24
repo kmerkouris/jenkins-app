@@ -43,7 +43,7 @@ export default function Header() {
               edge="end"
               onClick={() => setDrawerOpen(true)}
               aria-label="menu"
-              color="inherit"
+              color="primary"
             >
               <MenuIcon />
             </IconButton>
@@ -51,7 +51,7 @@ export default function Header() {
               anchor="right"
               open={drawerOpen}
               onClose={() => setDrawerOpen(false)}
-              PaperProps={{ sx: { width: 220 } }}
+             
             >
               <List>
                 {sections.map((section) => (
@@ -75,7 +75,6 @@ export default function Header() {
                   fontSize: '1rem',
                   fontWeight: 500,
                   mx: 1,
-                  color: theme.palette.primary.main,
                   textTransform: 'none',
                 }}
                 onClick={() => handleScroll(section.id)}
