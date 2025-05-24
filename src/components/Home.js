@@ -1,5 +1,5 @@
-
-import React, { useState } from 'react';
+// Home.js
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Typography,
@@ -8,10 +8,10 @@ import {
   Paper,
   IconButton,
   Button,
-  Box,
-  
+  Box
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+
 import profilePic from '../assets/logo.png';
 
 
@@ -20,14 +20,29 @@ export default function Home({ toggleTheme, mode }) {
   const [open, setOpen] = useState(false);
 
 
- 
 
- 
+
+  const [profile, setProfile] = useState({
+    name: 'Loading...',
+    role: '',
+    location: ''
+  });
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/profile')
+      .then(res => res.json())
+      .then(data => setProfile(data))
+      .catch(() => setProfile({
+        name: 'Unavailable',
+        role: 'Error fetching profile',
+        location: ''
+      }));
+  }, []);
+
+  
 
   return (
     <Container maxWidth="md" sx={{ mt: 6, mb: 6 }}>
-      
-
       <Paper elevation={3} sx={{ p: 4, borderRadius: 4, backgroundColor: '#f7f9fc' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
           <Box
@@ -54,10 +69,10 @@ export default function Home({ toggleTheme, mode }) {
           </Box>
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 600 }} color="text.primary">
-              Konstantinos Merkouris
+              {profile.name}
             </Typography>
             <Typography variant="h6" color="text.secondary">
-              Full-Stack Software Engineer | Athens, Greece
+              {profile.role} | {profile.location}
             </Typography>
           </Box>
         </Box>
