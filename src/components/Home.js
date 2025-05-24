@@ -1,4 +1,4 @@
-// Home.js
+
 import React, { useState } from 'react';
 import {
   Container,
@@ -6,42 +6,23 @@ import {
   Dialog,
   DialogContent,
   Paper,
-  Avatar,
-  Stack,
   IconButton,
   Button,
   Box,
-  useTheme,
-  useMediaQuery
+  
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import MenuIcon from '@mui/icons-material/Menu';
 import profilePic from '../assets/logo.png';
 
-const sections = [
-  { label: 'Home', id: 'home' },
-  { label: 'About', id: 'about' },
-  { label: 'Experience', id: 'experience' },
-  { label: 'Education', id: 'education' },
-  { label: 'Skills', id: 'skills' },
-  { label: 'Contact', id: 'contact' },
-];
+
 
 export default function Home({ toggleTheme, mode }) {
   const [open, setOpen] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleScroll = (id) => {
-    const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setDrawerOpen(false);
-    }
-  };
+
+ 
+
+ 
 
   return (
     <Container maxWidth="md" sx={{ mt: 6, mb: 6 }}>
