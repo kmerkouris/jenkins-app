@@ -1,4 +1,3 @@
-// Header.js
 import React, { useState } from 'react';
 import {
   AppBar, Toolbar, Typography, IconButton, Drawer,
@@ -24,7 +23,7 @@ export default function Header() {
   const handleScroll = (id) => {
     const section = document.getElementById(id);
     if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setDrawerOpen(false);
     }
   };
@@ -33,20 +32,34 @@ export default function Header() {
     <AppBar position="sticky" sx={{ backgroundColor: theme.palette.background.paper }} elevation={2}>
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Box display="flex" alignItems="center">
-          <Typography variant="h6" color="primary">
+          <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
             Konstantinos Merkouris
           </Typography>
         </Box>
 
         {isMobile ? (
           <>
-            <IconButton edge="end" onClick={() => setDrawerOpen(true)}>
+            <IconButton
+              edge="end"
+              onClick={() => setDrawerOpen(true)}
+              aria-label="menu"
+              color="inherit"
+            >
               <MenuIcon />
             </IconButton>
-            <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-              <List sx={{ width: 200 }}>
+            <Drawer
+              anchor="right"
+              open={drawerOpen}
+              onClose={() => setDrawerOpen(false)}
+              PaperProps={{ sx: { width: 220 } }}
+            >
+              <List>
                 {sections.map((section) => (
-                  <ListItem button key={section.id} onClick={() => handleScroll(section.id)}>
+                  <ListItem
+                    button
+                    key={section.id}
+                    onClick={() => handleScroll(section.id)}
+                  >
                     <ListItemText primary={section.label} />
                   </ListItem>
                 ))}
@@ -58,7 +71,13 @@ export default function Header() {
             {sections.map((section) => (
               <Button
                 key={section.id}
-                sx={{ fontSize: '1.1rem', mx: 1, color: theme.palette.primary.main }}
+                sx={{
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                  mx: 1,
+                  color: theme.palette.primary.main,
+                  textTransform: 'none',
+                }}
                 onClick={() => handleScroll(section.id)}
               >
                 {section.label}
