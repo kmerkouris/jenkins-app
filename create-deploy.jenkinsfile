@@ -9,22 +9,22 @@ pipeline {
     stages {
 
 
-        stage('Build Backend') {
-            agent {
-                docker {
-                    image 'maven:3.8.5-openjdk-17'
-                    reuseNode true
-                }
-            }
-            steps {
-                dir('springboot-backend') {
-                    sh '''
-                        mvn clean package -DskipTests
-                        docker build -t springboot-cv-backend .
-                    '''
-                }
-            }
-        }
+        // stage('Build Backend') {
+        //     agent {
+        //         docker {
+        //             image 'maven:3.8.5-openjdk-17'
+        //             reuseNode true
+        //         }
+        //     }
+        //     steps {
+        //         dir('springboot-backend') {
+        //             sh '''
+        //                 mvn clean package -DskipTests
+        //                 docker build -t springboot-cv-backend .
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Build') {
             agent {
