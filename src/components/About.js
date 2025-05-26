@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Container, Typography, Paper } from '@mui/material';
 
 export default function About() {
-
-  const [open, setOpen] = useState(false);
   
   const [about , setAbout] = useState({
     header: 'Loading...',

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, List, ListItem, Paper } from '@mui/material';
 
 export default function Experience() {
-  const [open, setOpen] = useState(false);
+  
 
   const [experience , setExperience] = useState({
        company: 'Loading...',
