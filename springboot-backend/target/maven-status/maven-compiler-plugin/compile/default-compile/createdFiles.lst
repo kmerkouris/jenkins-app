@@ -1,4 +1,7 @@
-com\konstantinos\cvbackend\ProfileController.class
 com\konstantinos\cvbackend\CvBackendApplication.class
+com\konstantinos\cvbackend\SkillsController.class
+com\konstantinos\cvbackend\ContactController.class
+com\konstantinos\cvbackend\ProfileController.class
 com\konstantinos\cvbackend\ExperienceController.class
 com\konstantinos\cvbackend\IntroductionBanner.class
+com\konstantinos\cvbackend\EducationController.class
