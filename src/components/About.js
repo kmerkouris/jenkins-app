@@ -1,8 +1,27 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Typography, Paper } from '@mui/material';
 
 export default function About() {
+
+  const [open, setOpen] = useState(false);
+  
+  const [about , setAbout] = useState({
+    header: 'Loading...',
+    introduction: ''
+  });
+
+  useEffect(() => {
+      fetch('http://localhost:8080/api/about')
+        .then(res => res.json())
+        .then(data => setAbout(data))
+        .catch(() => setAbout({
+          header: 'Unavailable',
+          introduction: 'Error fetching profile'
+        }));
+    }, []);
+
+
   return (
     <Container maxWidth="md" sx={{ mt: 6, mb: 6 }}>
       <Paper elevation={3} sx={{ p: 4, backgroundColor: '#f9f5f5' }}>
@@ -10,17 +29,14 @@ export default function About() {
           variant="h3"
           sx={{ fontWeight: 'bold', mb: 3, color: '#003366', textAlign: 'center' }}
         >
-          Profile
+          {about.header}
         </Typography>
 
         <Typography
           variant="h6"
           sx={{ color: '#1a237e', textAlign: 'justify' }}
         >
-          Creative and driven full-stack software engineer with a passion for building robust,
-          scalable systems. I blend technical precision with a collaborative mindset, always eager
-          to explore new tools and enhance development workflows. Motivated by challenges and
-          continuous learning, I thrive in dynamic, innovative environments.
+          {about.introduction}
         </Typography>
       </Paper>
     </Container>
