@@ -39,7 +39,7 @@ pipeline {
                     ls -la
                     node --version
                     npm --version
-                    npm install
+                    npm install ci
                     npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
                     npm run build
                     ls -la
