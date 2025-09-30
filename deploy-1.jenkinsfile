@@ -1,90 +1,87 @@
 pipeline {
-    agent any
+  agent any
 
-    environment {
-        NETLIFY_SITE_ID = 'a2dc4a84-fce7-45d1-99e8-5235324b55fc'
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+  environment {
+    NETLIFY_SITE_ID    = 'a2dc4a84-fce7-45d1-99e8-5235324b55fc'
+    NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+  }
+
+  stages {
+
+    stage('Build') {
+      steps {
+        script {
+          // Use Debian variant so we can apt-get build tools
+          docker.image('node:18').inside('-u 0') {  // -u 0 = run as root to apt-get
+            sh '''
+              set -euxo pipefail
+
+              # Basics for node-gyp, native modules, and git-based deps
+              apt-get update
+              DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+                  git ca-certificates python3 make g++ \
+                && rm -rf /var/lib/apt/lists/*
+
+              # Make installs more reliable & quiet
+              npm config set loglevel warn
+              npm config set fund false
+              npm config set audit false
+              npm config set fetch-retries 5
+              npm config set fetch-retry-maxtimeout 120000
+              npm config set fetch-timeout 120000
+
+              echo "Node and npm versions:"
+              node --version
+              npm --version
+
+              if [ -f package-lock.json ]; then
+                echo "Installing dependencies with npm ci"
+                npm ci
+              else
+                echo "No package-lock.json found — running npm install"
+                npm install
+              fi
+
+              echo "Building project"
+              # If your app is CRA this outputs ./build; Vite outputs ./dist
+              npm run build || (echo "Build failed"; exit 1)
+
+              echo "Build outputs (build/ and dist/ if present):"
+              [ -d build ] && ls -la build || true
+              [ -d dist ]  && ls -la dist  || true
+            '''
+          }
+        }
+      }
     }
 
-    stages {
+    stage('Deploy') {
+      steps {
+        script {
+          docker.image('node:18').inside('-u 0') {
+            sh '''
+              set -euxo pipefail
+              npm config set loglevel warn
+              npm config set fund false
+              npm config set audit false
 
-        stage('Build') {
-            steps {
-                script {
-                    docker.image('node:18-alpine').inside {
-                        sh '''
-                            npm config set registry https://registry.npmmirror.com
-                            npm config set loglevel warn
+              npm install netlify-cli
+              npx netlify --version
 
-                            echo "Node and npm versions:"
-                            node --version
-                            npm --version
+              # Choose correct directory: prefer ./build (CRA), else ./dist (Vite)
+              DEPLOY_DIR="build"
+              [ -d dist ] && DEPLOY_DIR="dist"
 
-                            echo "Installing dependencies using npm ci"
-                            npm ci
-
-                            echo "Building project"
-                            npm run build
-
-                            echo "Build output:"
-                            ls -la build
-                        '''
-                    }
-                }
-            }
+              echo "Deploying folder: ${DEPLOY_DIR}  — Site ID: ${NETLIFY_SITE_ID}"
+              npx netlify status
+              npx netlify deploy --dir="${DEPLOY_DIR}" --prod
+            '''
+          }
         }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    docker.image('node:18').inside {
-                        sh '''
-                            npm install netlify-cli
-                            node_modules/.bin/netlify --version
-                            echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
-                            node_modules/.bin/netlify status
-                            node_modules/.bin/netlify deploy --dir=build --prod
-                        '''
-                    }
-                }
-            }
-        }
-
-        /*
-        stage('Prod E2E') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true
-                }
-            }
-
-            environment {
-                CI_ENVIRONMENT_URL = 'https://merry-lokum-0b3d65.netlify.app/'
-            }
-
-            steps {
-                sh '''
-                    npx playwright install
-                    npx playwright test  --reporter=html
-                '''
-            }
-
-            post {
-                always {
-                    publishHTML([
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: false,
-                        reportDir: 'playwright-report',
-                        reportFiles: 'index.html',
-                        reportName: 'Playwright E2E',
-                        reportTitles: '',
-                        useWrapperFileDirectly: true
-                    ])
-                }
-            }
-        }
-        */
+      }
     }
+
+    // Optional: quick diagnostics first to surface env issues early
+    // stage('Diag') { steps { sh 'set -x; node -v || true; npm -v || true; ls -la; printenv | sort | egrep "^(HTTP|HTTPS|NO_)?PROXY|NETLIFY|DOCKER_" || true' } }
+  }
 }
