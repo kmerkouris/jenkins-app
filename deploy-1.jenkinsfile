@@ -7,59 +7,58 @@ pipeline {
   }
 
   stages {
+stage('Build') {
+  steps {
+    script {
+      docker.image('node:18').inside {
+        sh '''
+          set -eux
+          npm config set registry https://registry.npmmirror.com
+          npm config set loglevel warn
 
-    stage('Build') {
-        steps {
-          script {
-            docker.image('node:18').inside {
-              sh '''
-                set -eux
-                npm config set registry https://registry.npmmirror.com
-                npm config set loglevel warn
-      
-                echo "Node and npm versions:"
-                node --version
-                npm --version
-      
-                if [ -f package-lock.json ]; then
-                  echo "Installing dependencies using npm ci"
-                  npm ci
-                else
-                  echo "No package-lock.json — using npm install"
-                  npm install
-                fi
-      
-                echo "Building project"
-                npm run build
-      
-                echo "Build output:"
-                [ -d build ] && ls -la build || true
-                [ -d dist ]  && ls -la dist  || true
-              '''
-            }
-          }
-        }
+          echo "Node and npm versions:"
+          node --version
+          npm --version
+
+          if [ -f package-lock.json ]; then
+            echo "Installing dependencies using npm ci"
+            npm ci
+          else
+            echo "No package-lock.json — using npm install"
+            npm install
+          fi
+
+          echo "Building project"
+          npm run build
+
+          echo "Build output:"
+          [ -d build ] && ls -la build || true
+          [ -d dist ]  && ls -la dist  || true
+        '''
       }
-      
-      stage('Deploy') {
-        steps {
-          script {
-            docker.image('node:18').inside {
-              sh '''
-                set -eux
-                npm config set loglevel warn
-                npm install netlify-cli
-                npx netlify --version
-      
-                DEPLOY_DIR="build"; [ -d dist ] && DEPLOY_DIR="dist"
-                echo "Deploying to production. Site ID: $NETLIFY_SITE_ID  Dir: $DEPLOY_DIR"
-                npx netlify status
-                npx netlify deploy --dir="$DEPLOY_DIR" --prod
-              '''
-            }
-          }
-        }
+    }
+  }
+}
+
+stage('Deploy') {
+  steps {
+    script {
+      docker.image('node:18').inside {
+        sh '''
+          set -eux
+          npm config set loglevel warn
+          npm install netlify-cli
+          npx netlify --version
+
+          DEPLOY_DIR="build"; [ -d dist ] && DEPLOY_DIR="dist"
+          echo "Deploying to production. Site ID: $NETLIFY_SITE_ID  Dir: $DEPLOY_DIR"
+          npx netlify status
+          npx netlify deploy --dir="$DEPLOY_DIR" --prod
+        '''
       }
+    }
+  }
+}
     }
 
     // Optional: quick diagnostics first to surface env issues early
